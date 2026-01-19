@@ -59,7 +59,6 @@ main() {
     cpu_percent=$(get_percent)
     echo "$cpu_label $cpu_percent"
   fi
-  sleep $RATE
 }
 
 # run main driver
