@@ -18,7 +18,6 @@ main() {
   show_fahrenheit=$(get_tmux_option "@dracula-show-fahrenheit" true)
   show_location=$(get_tmux_option "@dracula-show-location" true)
   fixed_location=$(get_tmux_option "@dracula-fixed-location")
-  weather_hide_errors=$(get_tmux_option "@dracula-weather-hide-errors" false)
   show_powerline=$(get_tmux_option "@dracula-show-powerline" false)
   transparent_powerline_bg=$(get_tmux_option "@dracula-transparent-powerline-bg" false)
   show_flags=$(get_tmux_option "@dracula-show-flags" false)
@@ -42,9 +41,6 @@ main() {
   left_pad=$(get_tmux_option "@dracula-left-pad" " ")
   right_pad=$(get_tmux_option "@dracula-right-pad" " ")
 
-  if [ "$left_pad" = false ]; then left_pad=""; fi
-  if [ "$right_pad" = false ]; then right_pad=""; fi
-
   narrow_mode=$(get_tmux_option "@dracula-narrow-mode" false)
   if $narrow_mode; then
     IFS=' ' read -r -a plugins <<< $(get_tmux_option "@dracula-narrow-plugins" "compact-alt battery network weather")
@@ -52,19 +48,19 @@ main() {
     IFS=' ' read -r -a plugins <<< $(get_tmux_option "@dracula-plugins" "battery network weather")
   fi
 
-  # Dracula Color Pallette
-  white="#f8f8f2"
-  gray="#44475a"
-  dark_gray="#282a36"
-  light_purple="#bd93f9"
-  dark_purple="#6272a4"
-  cyan="#8be9fd"
-  green="#50fa7b"
-  orange="#ffb86c"
-  red="#ff5555"
-  purple="#b166cc"
-  pink="#ff79c6"
-  yellow="#f1fa8c"
+  # Gruvbox Color Pallette
+  white="#ebdbb2"
+  gray="#574d46"
+  dark_gray="#282828"
+  light_purple="#d3869b"
+  dark_purple="#458588"
+  cyan="#83a598"
+  green="#b8bb26"
+  orange="#fe8019"
+  red="#fb4934"
+  purple="#b16286"
+  pink="#fb4934"
+  yellow="#fabd2f"
 
   # Override default colors and possibly add more
   colors="$(get_tmux_option "@dracula-colors" "")"
@@ -176,13 +172,13 @@ main() {
   # Status left
   if $show_powerline; then
     if $show_edge_icons; then
-      tmux set-option -g status-left "#[bg=${bg_color}]#[fg=${green}]#[bold]#{?client_prefix,#[fg=${yellow}],}${show_right_sep}#[bg=${green}]#[fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon} #[fg=${green}]#[bg=${bg_color}]#{?client_prefix,#[fg=${yellow}],}${left_sep} "
+      tmux set-option -g status-left "#[bg=${bg_color},fg=${green},bold]#{?client_prefix,#[fg=${yellow}],}${show_right_sep}#[bg=${green},fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon} #[fg=${green},bg=${bg_color}]#{?client_prefix,#[fg=${yellow}],}${left_sep} "
     else
-      tmux set-option -g status-left "#[bg=${dark_gray}]#[fg=${green}]#[bg=${green}]#[fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon} #[fg=${green}]#[bg=${bg_color}]#{?client_prefix,#[fg=${yellow}],}${left_sep}"
+      tmux set-option -g status-left "#[bg=${dark_gray},fg=${green}]#[bg=${green},fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon} #[fg=${green},bg=${bg_color}]#{?client_prefix,#[fg=${yellow}],}${left_sep}"
     fi
     powerbg=${bg_color}
   else
-    tmux set-option -g status-left "#[bg=${green}]#[fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon}"
+    tmux set-option -g status-left "#[bg=${green},fg=${dark_gray}]#{?client_prefix,#[bg=${yellow}],} ${left_icon}"
   fi
 
   # Status right
@@ -314,7 +310,7 @@ main() {
 
     elif [ $plugin = "weather" ]; then
       IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-weather-colors" "orange dark_gray")
-      script="#($current_dir/weather_wrapper.sh $show_fahrenheit $show_location '$fixed_location' $weather_hide_errors)"
+      script="#($current_dir/weather_wrapper.sh $show_fahrenheit $show_location '$fixed_location')"
 
     elif [ $plugin = "time" ]; then
       IFS=' ' read -r -a colors <<< $(get_tmux_option "@dracula-time-colors" "dark_purple white")
@@ -365,7 +361,7 @@ main() {
 
     # edge styling
     if $show_edge_icons; then
-      right_edge_icon="#[bg=${bg_color}]#[fg=${!colors[0]}]${show_left_sep}"
+      right_edge_icon="#[bg=${bg_color},fg=${!colors[0]}]${show_left_sep}"
       background_color=${bg_color}
     else
       background_color=${powerbg}
@@ -376,16 +372,16 @@ main() {
 
     if $show_powerline; then
       if $show_empty_plugins; then
-        tmux set-option -ga status-right " #[fg=${!colors[0]}]#[bg=${background_color}]#[nobold]#[nounderscore]#[noitalics]${right_sep}#[fg=${!colors[1]}]#[bg=${!colors[0]}]$pad_script$right_edge_icon"
+        tmux set-option -ga status-right " #[fg=${!colors[0]},bg=${background_color},nobold,nounderscore,noitalics]${right_sep}#[fg=${!colors[1]},bg=${!colors[0]}]$pad_script$right_edge_icon"
       else
-        tmux set-option -ga status-right "#{?#{==:$script,},,#[fg=${!colors[0]}]#[nobold]#[nounderscore]#[noitalics]${right_sep}#[fg=${!colors[1]}]#[bg=${!colors[0]}]$pad_script$right_edge_icon}"
+        tmux set-option -ga status-right "#{?#{==:$script,},,#[fg=${!colors[0]},nobold,nounderscore,noitalics]${right_sep}#[fg=${!colors[1]},bg=${!colors[0]}]$pad_script$right_edge_icon}"
     fi
       powerbg=${!colors[0]}
     else
       if $show_empty_plugins; then
-        tmux set-option -ga status-right "#[fg=${!colors[1]}]#[bg=${!colors[0]}]$pad_script"
+        tmux set-option -ga status-right "#[fg=${!colors[1]},bg=${!colors[0]}]$pad_script"
       else
-        tmux set-option -ga status-right "#{?#{==:$script,},,#[fg=${!colors[1]}]#[bg=${!colors[0]}]$pad_script}"
+        tmux set-option -ga status-right "#{?#{==:$script,},,#[fg=${!colors[1]},bg=${!colors[0]}]$pad_script}"
       fi
     fi
 
@@ -393,9 +389,9 @@ main() {
 
   # Window option
   if $show_powerline; then
-    tmux set-window-option -g window-status-current-format "#[fg=${window_sep_fg}]#[bg=${window_sep_bg}]${window_sep}#[fg=${white}]#[bg=${dark_purple}] #I #W${current_flags} #[fg=${dark_purple}]#[bg=${bg_color}]${left_sep}"
+    tmux set-window-option -g window-status-current-format "#[fg=${window_sep_fg},bg=${window_sep_bg}]${window_sep}#[fg=${white},bg=${dark_purple}] #I #W${current_flags} #[fg=${dark_purple},bg=${bg_color}]${left_sep}"
   else
-    tmux set-window-option -g window-status-current-format "#[fg=${white}]#[bg=${dark_purple}] #I #W${current_flags} "
+    tmux set-window-option -g window-status-current-format "#[fg=${white},bg=${dark_purple}] #I #W${current_flags} "
   fi
 
   tmux set-window-option -g window-status-format "#[fg=${white}]#[bg=${bg_color}] #I #W${flags}"
