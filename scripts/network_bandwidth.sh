@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+current_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$current_dir/utils.sh"
+
 # UPLOAD and DOWNLOAD index
 readonly UPLOAD=0
 readonly DOWNLOAD=1
@@ -101,8 +104,9 @@ main() {
   bandwidth=()
 
   network_name=""
-  show_interface="$(tmux show-option -gqv "@dracula-network-bandwidth-show-interface")"
-  interval="$(tmux show-option -gqv "@dracula-network-bandwidth-interval")"
+  show_interface="$(get_tmux_option "@dracula-network-bandwidth-show-interface" "false")"
+  global_interval="$(get_tmux_option "@dracula-refresh-rate" 5)"
+  interval="$(get_tmux_option "@dracula-network-bandwidth-interval" "$global_interval")"
 
   if [[ -z $interval_update ]]; then
     interval_update=0
