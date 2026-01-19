@@ -48,19 +48,19 @@ main() {
     IFS=' ' read -r -a plugins <<< $(get_tmux_option "@dracula-plugins" "battery network weather")
   fi
 
-  # Gruvbox Color Pallette
-  white="#ebdbb2"
-  gray="#574d46"
-  dark_gray="#282828"
-  light_purple="#d3869b"
-  dark_purple="#458588"
-  cyan="#83a598"
-  green="#b8bb26"
-  orange="#fe8019"
-  red="#fb4934"
-  purple="#b16286"
-  pink="#fb4934"
-  yellow="#fabd2f"
+  # Dracula Color Pallette
+  white="#f8f8f2"
+  gray="#44475a"
+  dark_gray="#282a36"
+  light_purple="#bd93f9"
+  dark_purple="#6272a4"
+  cyan="#8be9fd"
+  green="#50fa7b"
+  orange="#ffb86c"
+  red="#ff5555"
+  purple="#b166cc"
+  pink="#ff79c6"
+  yellow="#f1fa8c"
 
   # Override default colors and possibly add more
   colors="$(get_tmux_option "@dracula-colors" "")"
