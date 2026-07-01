@@ -25,6 +25,7 @@
   - [mac-player](#mac-player---up)
   - [mpc](#mpc---up)
   - [network](#network---up)
+  - [network-public-ip](#network-public-ip---up)
   - [network-bandwidth](#network-bandwidth---up)
   - [network-ping](#network-ping---up)
   - [network-vpn](#network-vpn---up)
@@ -204,7 +205,7 @@ This widget provides information about the current charge of the battery, whethe
 Display any icon for the battery you'd like with:
 
 ```bash
-set -g @dracula-battery-label "♥ "
+set -g @dracula-battery-label "🦇 "
 ```
 
 to use nothing but nerdfont icons informing you about the current state, use the following,
@@ -358,7 +359,7 @@ set -g @dracula-cwd-max-chars "0"
 
 ### fossil - [up](#table-of-contents)
 
-**TODO**
+Fossil has no configurable options
 
 ### git - [up](#table-of-contents)
 
@@ -409,6 +410,11 @@ Show the current repository name in the status bar
 ```bash
 # default is false
 set -g @dracula-git-show-repo-name true
+```
+
+Limit the maximum length of git branch names displayed in the status bar. Truncation is disabled by default.
+```bash
+set -g @dracula-git-truncate-length 10
 ```
 
 ### gpu-info - [up](#table-of-contents)
@@ -521,20 +527,32 @@ set -g @dracula-kubernetes-context-label "Some Label"
 
 Hide user from the context string
 
-```
+```bash
 set -g @dracula-kubernetes-hide-user true
 ```
 
 Hide ARN (show only cluster name) - Available for EKS only (only available for cluster names that are ARNs)
 
-```
+```bash
 set -g @dracula-kubernetes-eks-hide-arn true
 ```
 
 Extract the account as a prefix to the cluster name - Available for EKS only (only available for cluster names that are ARNs)
 
-```
+```bash
 set -g @dracula-kubernetes-eks-extract-account true
+```
+
+Combine the above options and show only the Kubernetes Context
+
+```bash
+set -g @dracula-show-only-kubernetes-context true
+```
+
+Hide empty plugin when the `~/.kube/config` file is missing
+
+```bash
+set -g @dracula-kubernetes-hide-no-config true
 ```
 
 ### libreview - [up](#table-of-contents)
@@ -644,6 +662,16 @@ wifi:      󰖩  󰘊 󰒢
 Known issues:
 
 - If for some reason `iw` is only in the path for root and not the normal user, wifi connections will be considered ethernet connections.
+
+### network-public-ip - [up](#table-of-contents)
+
+This widget displays the public IP address you're using, by querying the public service `ifconfig.me`.
+
+Possible nerdfont settings for public IP info:
+
+```bash
+set -g @dracula-network-public-ip-label "󰖟 "
+```
 
 ### network-bandwidth - [up](#table-of-contents)
 
@@ -835,10 +863,22 @@ This widget displays the system temperature.
 
 ### terraform - [up](#table-of-contents)
 
-**TODO**
+Add prefix label before workspace
 
-```
+```bash
 set -g @dracula-terraform-label ""
+```
+
+To use a Terraform fork like `tofu`
+
+```bash
+set -g @dracula-terraform-fork "tofu"
+```
+
+To hide the plugin when a `.terraform` isn't present
+
+```bash
+set -g @dracula-terraform-hide true
 ```
 
 `set -g @dracula-refresh-rate 5` affects this widget

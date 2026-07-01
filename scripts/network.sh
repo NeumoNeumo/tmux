@@ -22,7 +22,11 @@ get_ssid()
   # Check OS
   case $(uname -s) in
     Linux)
-      SSID=$(iw dev | sed -nr 's/^\t\tssid (.*)/\1/p')
+      if grep -qi microsoft /proc/version 2>/dev/null && command -v netsh.exe &>/dev/null; then
+        SSID=$(netsh.exe wlan show interfaces 2>/dev/null | sed -nr 's/^\s*SSID\s*:\s*(.+)/\1/p' | head -1 | tr -d '\r')
+      else
+        SSID=$(iw dev | sed -nr 's/^\t\tssid (.*)/\1/p')
+      fi
       if [ -n "$SSID" ]; then
         echo "$wifi_label$SSID"
       else
@@ -37,7 +41,14 @@ get_ssid()
 
       ifname=$(_get_wifi_ifname)
 
-      if (( $(echo "$(sw_vers -productVersion) > 25.0" | bc -l) )); then
+      # string manipulation required to remove the minor version of the macos version (e.g. x.y.z removes .z)
+      # this is required to prevent issues in version detection
+      #
+      # Note: Minor versions do not introduce substantial changes generally only fix bugs
+      macos_version=$(sw_vers -productVersion)
+      macos_version=${macos_version%.*}
+
+      if (( $(echo "$macos_version > 25.0" | bc -l) )); then
         wifi_network=$(networksetup -listpreferredwirelessnetworks "$ifname" | awk 'NR==2 && sub("\t","") { print; exit }')
       else
         wifi_network=$(ipconfig getsummary "$ifname" | awk -F ' SSID : '  '/ SSID : / {print $2}')
